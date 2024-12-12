@@ -1,0 +1,351 @@
+---
+title: "Deep Learning"
+author: "Your Name"
+date: "2022-12-21"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,fig.align="center",fig.width=7,fig.height=2.5)
+```
+
+```{css,echo=FALSE}
+.btn {
+    border-width: 0 0px 0px 0px;
+    font-weight: normal;
+    text-transform: ;
+}
+
+.btn-default {
+    color: #2ecc71;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+```
+
+```{r,echo=FALSE}
+# Global parameter
+show_code <- FALSE
+```
+
+# Class Workbook {.tabset .tabset-fade .tabset-pills}
+
+## In class activity
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import math
+from matplotlib.pyplot import subplots
+#import statsmodels.api as sm
+from plotnine import *
+import plotly.express as px
+import statsmodels.formula.api as sm
+#import ISLP as islp
+
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import scale
+from sklearn.linear_model import LinearRegression
+```
+
+### Ames Housing data
+
+
+Please take a look at the Ames Hoursing data.
+```{python,echo=show_code}
+ames_raw=pd.read_csv("ames_raw.csv")
+```
+
+Use data of `ames_raw` up to 2008 predict the housing price for the later years.
+```{python,echo=show_code}
+ames_raw_2009, ames_raw_2008= ames_raw.query('`Yr Sold`>=2008').copy(), ames_raw.query('`Yr Sold` <2008').copy()
+
+```
+
+Use the following loss function calculator.
+```{python,echo=show_code}
+def calc_loss(prediction,actual):
+  difpred = actual-prediction
+  RMSE =pow(difpred.pow(2).mean(),1/2)
+  operation_loss=abs(sum(difpred[difpred<0]))+sum(0.1*actual[difpred>0])
+  return RMSE,operation_loss
+
+```
+
+Use a simple neural network model.  
+```{python,eval=FALSE,echo=show_code}
+nnfit_2008= # ["your model here"] # use ames_raw_2008
+```
+
+When you decide on your model use the following to come up with your test loss.
+```{python,eval=FALSE,echo=show_code}
+pred_2009=# Predict using ames_raw_2009
+calc_loss(pred_2009,ames_raw_2009.SalePrice)
+```
+
+Try to answer the following additional questions.
+
+- Does your model indicate a good fit?
+
+
+- How does your model result compare to the previous models you fit?
+
+
+- Can you explain what feature was important determinant of the price?
+
+
+
+### COVID 19 Survival in Mexico
+
+Let's revisit COVID-19 in Mexico dataset from the [Mexican government](https://datos.gob.mx/busca/dataset/informacion-referente-a-casos-covid-19-en-mexico).  This data is a version downloaded from [Kaggle](https://www.kaggle.com/datasets/meirnizri/covid19-dataset?resource=download).  The raw dataset consists of 21 unique features and 1,048,576 unique patients. In the Boolean features, 1 means "yes" and 2 means "no". values as 97 and 99 are missing data.
+
+- sex: 1 for female and 2 for male.
+- age: of the patient.
+- classification: COVID test findings. Values 1-3 mean that the patient was diagnosed with COVID in different degrees. 4 or higher means that the patient is not a carrier of COVID or that the test is inconclusive.
+- patient type: type of care the patient received in the unit. 1 for returned home and 2 for hospitalization.
+- pneumonia: whether the patient already have air sacs inflammation or not.
+- pregnancy: whether the patient is pregnant or not.
+- diabetes: whether the patient has diabetes or not.
+- copd: Indicates whether the patient has Chronic obstructive pulmonary disease or not.
+- asthma: whether the patient has asthma or not.
+- inmsupr: whether the patient is immunosuppressed or not.
+- hypertension: whether the patient has hypertension or not.
+- cardiovascular: whether the patient has heart or blood vessels related disease.
+- renal chronic: whether the patient has chronic renal disease or not.
+- other disease: whether the patient has other disease or not.
+- obesity: whether the patient is obese or not.
+- tobacco: whether the patient is a tobacco user.
+- usmr: Indicates whether the patient treated medical units of the first, second or third level.
+- medical unit: type of institution of the National Health System that provided the care.
+- intubed: whether the patient was connected to the ventilator.
+- icu: Indicates whether the patient had been admitted to an Intensive Care Unit.
+- date died: If the patient died indicate the date of death, and 9999-99-99 otherwise.
+
+```{python}
+import zipfile
+Train_COVID= pd.read_csv('Train_COVID.zip',compression='zip')
+Test_COVID= pd.read_csv('Test_COVID.zip',compression='zip')
+```
+
+
+- Fit a sequence model that predicts the number of cases a week a head.
+
+- Modify your model to make prediction for different gender.
+
+
+Your code:
+```{python,echo=TRUE}
+
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+
+## Problem set
+
+### Writing your own gradient decent
+
+Consider the simple function $R(\beta) = sin(\beta) + \beta/10$.
+
+(a) Draw a graph of this function over the range $\beta \in [−6, 6]$.
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+
+(b) What is the derivative of this function?
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+(c) Given $\beta_0 = 2.3$, run gradient descent to find a local minimum of $R(\beat)$ using a learning rate of $\rho= 0.1$. Show each of $\beta_0,\beta_1,\dots$ in your plot, as well as the final answer.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+(d) Repeat with $\beta_0 = 1.4$.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### Default
+
+Fit a neural network to the Default data. Use a single hidden layer with 10 units, and dropout regularization. Have a look at Labs 10.9.1–10.9.2 for guidance. Compare the classification performance of your model with that of linear logistic regression.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### IMDb
+
+Repeat the analysis of Lab 10.9.5 on the IMDb data using a similarly structured neural network. We used 16 hidden units at each of two hidden layers. Explore the effect of increasing this to 32 and 64 units per layer, with and without 30% dropout regularization.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE
+
+Fit a lag-5 autoregressive model to the NYSE data, as described in the text and Lab 10.9.6. Refit the model with a 12-level factor representing the month. Does this factor improve the performance of the model?
+
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE 2
+In Section 10.9.6, we showed how to fit a linear AR model to the
+NYSE data using the `LinearRegression()` function. However, we also
+mentioned that we can “flatten” the short sequences produced for
+the RNN model in order to fit a linear AR model. Use this latter
+approach to fit a linear AR model to the NYSE data. Compare the test
+R2 of this linear AR model to that of the linear AR model that we fit
+in the lab. What are the advantages/disadvantages of each approach?
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+Repeat the previous exercise, but now fit a nonlinear AR model by
+“flattening” the short sequences produced for the RNN model.
+
+ Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE 3
+
+Consider the RNN fit to the NYSE data in Section 10.9.6. Modify the code to allow inclusion of the variable day_of_week, and fit the RNN. Compute the test $R^2$.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+
+### CNN on photo
+
+From your collection of personal photographs, pick 10 images of animals
+(such as dogs, cats, birds, farm animals, etc.). If the subject
+does not occupy a reasonable part of the image, then crop the image.
+Now use a pretrained image classification CNN as in Lab 10.9.4 to
+predict the class of each of your images, and report the probabilities
+for the top five predicted classes for each image.
+
+Your code:
+```{python,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+
+

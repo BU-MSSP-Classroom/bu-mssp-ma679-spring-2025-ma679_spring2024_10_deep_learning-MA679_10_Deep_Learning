@@ -1,0 +1,554 @@
+---
+title: "Deep Learning"
+author: "Your Name"
+date: "2022-12-21"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,fig.align="center",fig.width=7,fig.height=2.5)
+devtools::install_github("https://github.com/TimoMatzen/RBM")
+pacman::p_load(
+       car
+      , keras
+      , ggplot2
+      , ggExtra
+      , reshape2
+      , corrplot
+      , RColorBrewer
+      , lubridate
+      , AmesHousing
+      , torch
+      , luz  # high-level interface for torch
+      , torchvision # for datasets and image transformation
+      , torchdatasets # for datasets we are going to use
+      , zeallot
+      , RBM
+      )
+```
+
+```{css,echo=FALSE}
+.btn {
+    border-width: 0 0px 0px 0px;
+    font-weight: normal;
+    text-transform: ;
+}
+
+.btn-default {
+    color: #2ecc71;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+```
+
+```{r,echo=FALSE}
+# Global parameter
+show_code <- TRUE
+```
+
+# Class Workbook {.tabset .tabset-fade .tabset-pills}
+
+## In class activity
+### Ames Housing data
+
+
+Please take a look at the Ames Hoursing data.
+```{r,echo=show_code}
+library(AmesHousing)
+?ames_raw
+```
+
+Use data of `ames_raw` up to 2008 predict the housing price for the later years.
+```{r,echo=show_code}
+ames_raw_2008=ames_raw[ames_raw$`Yr Sold`<2008,]
+ames_raw_2009=ames_raw[ames_raw$`Yr Sold`>=2008,]
+```
+
+Use the following loss function calculator.
+```{r,echo=show_code}
+calc_loss<-function(prediction,actual){
+  difpred <- actual-prediction
+  RMSE <-sqrt(mean(difpred^2))
+  operation_loss<-abs(sum(difpred[difpred<0]))+sum(0.1*actual[difpred>0])
+  return(
+    list(RMSE,operation_loss
+         )
+  )
+}
+```
+
+Use a simple neural network model.  
+```{r,eval=FALSE,echo=show_code}
+nnfit_2008<- # ["your model here"] # use ames_raw_2008
+```
+
+When you decide on your model use the following to come up with your test loss.
+```{r,eval=FALSE,echo=show_code}
+pred_2009<-# Predict using ames_raw_2009
+calc_loss(pred_2009,ames_raw_2009$SalePrice)
+```
+
+Try to answer the following additional questions.
+
+- Does your model indicate a good fit?
+
+
+- How does your model result compare to the previous models you fit?
+
+
+- Can you explain what feature was important determinant of the price?
+
+
+
+### COVID 19 Survival in Mexico
+
+Let's revisit COVID-19 in Mexico dataset from the [Mexican government](https://datos.gob.mx/busca/dataset/informacion-referente-a-casos-covid-19-en-mexico).  This data is a version downloaded from [Kaggle](https://www.kaggle.com/datasets/meirnizri/covid19-dataset?resource=download).  The raw dataset consists of 21 unique features and 1,048,576 unique patients. In the Boolean features, 1 means "yes" and 2 means "no". values as 97 and 99 are missing data.
+
+- sex: 1 for female and 2 for male.
+- age: of the patient.
+- classification: COVID test findings. Values 1-3 mean that the patient was diagnosed with COVID in different degrees. 4 or higher means that the patient is not a carrier of COVID or that the test is inconclusive.
+- patient type: type of care the patient received in the unit. 1 for returned home and 2 for hospitalization.
+- pneumonia: whether the patient already have air sacs inflammation or not.
+- pregnancy: whether the patient is pregnant or not.
+- diabetes: whether the patient has diabetes or not.
+- copd: Indicates whether the patient has Chronic obstructive pulmonary disease or not.
+- asthma: whether the patient has asthma or not.
+- inmsupr: whether the patient is immunosuppressed or not.
+- hypertension: whether the patient has hypertension or not.
+- cardiovascular: whether the patient has heart or blood vessels related disease.
+- renal chronic: whether the patient has chronic renal disease or not.
+- other disease: whether the patient has other disease or not.
+- obesity: whether the patient is obese or not.
+- tobacco: whether the patient is a tobacco user.
+- usmr: Indicates whether the patient treated medical units of the first, second or third level.
+- medical unit: type of institution of the National Health System that provided the care.
+- intubed: whether the patient was connected to the ventilator.
+- icu: Indicates whether the patient had been admitted to an Intensive Care Unit.
+- date died: If the patient died indicate the date of death, and 9999-99-99 otherwise.
+
+```{r,echo=show_code}
+Covid_Data<- read.csv("Covid_Data.csv")
+```
+
+- Fit a sequence model that predicts the number of cases a week a head.
+
+- Modify your model to make prediction for different gender.
+
+
+Your code:
+```{r,echo=TRUE}
+
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+
+## Problem set
+
+### Writing your own gradient decent
+
+Consider the simple function $R(\beta) = sin(\beta) + \beta/10$.
+
+(a) Draw a graph of this function over the range $\beta \in [−6, 6]$.
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+
+(b) What is the derivative of this function?
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+(c) Given $\beta_0 = 2.3$, run gradient descent to find a local minimum of $R(\beat)$ using a learning rate of $\rho= 0.1$. Show each of $\beta_0,\beta_1,\dots$ in your plot, as well as the final answer.
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+(d) Repeat with $\beta_0 = 1.4$.
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### Default
+
+Fit a neural network to the Default data. Use a single hidden layer with 10 units, and dropout regularization. Have a look at Labs 10.9.1–10.9.2 for guidance. Compare the classification performance of your model with that of linear logistic regression.
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### IMDb
+
+Repeat the analysis of Lab 10.9.5 on the IMDb data using a similarly
+structured neural network. There we used a dictionary of size 10,000.
+Consider the effects of varying the dictionary size. Try the values
+1000, 3000, 5000, and 10,000, and compare the results.
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE
+
+Fit a lag-5 autoregressive model to the NYSE data, as described in
+the text and Lab 10.9.6. Refit the model with a 12-level factor representing
+the month. Does this factor improve the performance of the
+model?
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE 2
+In Section 10.9.6, we showed how to fit a linear AR model to the
+NYSE data using the lm() function. However, we also mentioned that
+we can “flatten” the short sequences produced for the RNN model in
+order to fit a linear AR model. Use this latter approach to fit a linear
+AR model to the NYSE data. Compare the test R2 of this linear AR
+model to that of the linear AR model that we fit in the lab. What
+are the advantages/disadvantages of each approach?
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+Repeat the previous exercise, but now fit a nonlinear AR model by
+'flattening' the short sequences produced for the RNN model.
+ Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+### NYSE 3
+
+Consider the RNN fit to the NYSE data in Section 10.9.6. Modify the
+code to allow inclusion of the variable day of week, and fit the RNN.
+Compute the test R2.
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+
+### CNN on photo
+
+From your collection of personal photographs, pick 10 images of animals
+(such as dogs, cats, birds, farm animals, etc.). If the subject
+does not occupy a reasonable part of the image, then crop the image.
+Now use a pretrained image classification CNN as in Lab 10.9.4 to
+predict the class of each of your images, and report the probabilities
+for the top five predicted classes for each image.
+
+Your code:
+```{r,echo=TRUE}
+#
+#
+```
+
+Your answer:
+
+~~~
+Please write your answer in full sentences.
+
+
+~~~
+
+## Additional Material
+
+### [Tensorflow/Keras] (https://tensorflow.rstudio.com/tutorials/quickstart/beginner)
+
+Tensorflow and Keras are confusing because they are essentially the same thing in Python.
+The two used to be separate with keras being a highlevel wrapper on tensorflow. 
+But since tensorflow 2.0 the tensorflow community has taken in keras syntax in tensorflow.
+R lags behind because the people at R-studio invested in making keras that they didn't want to do an overhaul.  Let's look at hand written digits data mnist.
+```{r,eval=FALSE}
+library(tensorflow)
+library(keras)
+c(c(x_train, y_train), c(x_test, y_test)) %<-% keras::dataset_mnist()
+x_train <- x_train / 255
+x_test <-  x_test / 255
+```
+
+Model definition for keras models are nice because it follows the piping syntax.
+
+```{r,eval=FALSE}
+model <- keras_model_sequential(input_shape = c(28, 28)) %>%
+  layer_flatten() %>%
+  layer_dense(128, activation = "relu") %>%
+  layer_dropout(0.2) %>%
+  layer_dense(10)
+```
+
+You choose the right loss function 
+```{r,eval=FALSE}
+loss_fn <- loss_sparse_categorical_crossentropy(from_logits = TRUE)
+```
+
+then you need to compile the model with the loss, metrics and optimizer specified.
+```{r,eval=FALSE}
+model %>% compile(
+  optimizer = "adam",
+  loss = loss_fn,
+  metrics = "accuracy"
+)
+```
+
+Model fit is using the fit function.
+```{r,eval=FALSE}
+model %>% fit(x_train, y_train, epochs = 50)
+```
+
+Evaluation function
+```{r,eval=FALSE}
+model %>% evaluate(x_test,  y_test, verbose = 2)
+```
+
+Prediction function
+```{r,eval=FALSE}
+predictions <- predict(model, x_train[1:2, , ])
+predictions
+```
+
+
+### Torch (R) == PyTorch (Python)
+
+Torch syntax require some getting used to.  It tries to imitate the object definition in PyTorch using R.  You define `nn_module` object that needs at least two functions.  `initialize` and `forward`.  You can have any additional functions but these are must.  When the object is instantiated, the `initialize()` is called and when the networks is calculating the feed forward process `forward` is called. The backpropagation is implicit and they are automatically calculated for torch tensors.
+
+```{r,eval=FALSE}
+model_name <- nn_module(
+  initialize = function() {
+	# Something to do at initialization phase
+  },
+  forward = function(x) {
+	# How the data flows through in the forward propagation phase
+  }
+)
+```
+
+Once the model is specified, you need to set it up.
+
+```{r,eval=FALSE}
+model_name <- model_name %>% 
+setup( loss = nn_cross_entropy_loss(),# Implicit Softmax 	
+       optimizer = optim_rmsprop, 
+	      metrics = list(luz_metric_accuracy()) )
+```
+
+fit function will fit the model.
+```{r,eval=FALSE}
+fitted <- model_name %>% 
+	fit( data = train_ds, 
+	      epochs = 5, 
+		valid_data = 0.2, 
+		...
+		verbose = FALSE )
+```
+
+
+### H2O Deep Learning
+
+Initialize H2O
+```{r}
+library(h2o)
+h2o.init()
+```
+
+We will look at the Prostate Cancer Study data.
+These are baseline exam results on prostate cancer patients from Dr. Donn Young at The Ohio State University Comprehensive Cancer Center.
+```{r}
+prostate.hex = h2o.uploadFile(path = system.file("extdata", "prostate.csv", package="h2o"), destination_frame = "prostate.hex")
+summary(prostate.hex)
+# Set the CAPSULE column to be a factor column then build model.
+prostate.hex$CAPSULE = as.factor(prostate.hex$CAPSULE)
+```
+
+You can fit a deep learning model with 3 hidden layers each with 10 units as
+```{r}
+model = h2o.deeplearning(x = setdiff(colnames(prostate.hex), c("ID","CAPSULE")), 
+                         y = "CAPSULE", 
+                         training_frame = prostate.hex, 
+                         activation = "Tanh", 
+                         hidden = c(10, 10, 10), epochs = 1000)
+print(model@model$model_summary)
+```
+
+model evaluation functions
+```{r}
+# Make predictions with the trained model with training data.
+predictions = predict(object = model, newdata = prostate.hex)
+# Export predictions from H2O Cluster as R dataframe.
+predictions.R = as.data.frame(predictions)
+head(predictions.R)
+tail(predictions.R)
+
+# Check performance of classification model.
+performance = h2o.performance(model = model)
+print(performance)
+
+```
+```{r}
+
+h2o.shutdown()
+```
+
+
+### Plotting MLP 
+
+Making plots for MLP is easy to do with `NeuralNetTools`.
+```{r,fig.align="center",fig.width=7,fig.height=5}
+library(NeuralNetTools)
+wts_in <- c(rep(0.1,47))
+struct <- c(5, 4, 3, 2) #two inputs, two hidden, one output
+plotnet(wts_in, struct = struct,bias=FALSE,x_names="observed",
+        y_names="output",node_labs=T, circle_col=list("lightblue","white"))
+```
+
+### Self organizing map (Kohonen,1980)
+
+Self Organizing Map (SOM) are dimension reduction method that is similar to graph distance based method that is popular today.  The goal of SOM is to map observations to nodes that are placed on a grid.  
+
+```{r ,fig.align="center",fig.width=7,fig.height=7.5}
+library(kohonen) 
+set.seed(10101)
+train.obs <- sample(nrow(iris), 50) # get the training set observations
+train.set <- scale(iris[train.obs,][,-5]) # check info about scaling data below
+test.set  <- scale(iris[-train.obs, ][-5],
+               center = attr(train.set, "scaled:center"),
+               scale  = attr(train.set, "scaled:scale"))
+som.iris <- som(train.set, grid = somgrid(5, 5, "hexagonal"))
+plot(som.iris)
+
+
+som.iris <- supersom(train.set, grid = somgrid(5, 5, "hexagonal"))
+
+som.prediction <-  predict(som.iris, newdata = test.set, trainingdata = train.set)
+
+#table(iris[-train.obs,5], som.prediction$prediction)
+```
+
+### Restricted Boltzmann Machine [RBM](https://github.com/TimoMatzen/RBM)
+
+Boltzmann Machine (Ackley et al. (1985)) is a Hopfiled Network (Hopfield, 1982) with hidden and visible units. The two layer latent variable model is represented by using undirected graph that assumes connection between all the nodes in the model. Restricted Boltzmann Machine (RBM) are simplified version of BM where we assume no association between the latent variables nor between the observed variables. RBMs are dimension reduction method and also latent variable method.
+
+```{r,fig.align="center",fig.width=7,fig.height=5}
+library(NeuralNetTools)
+wts_in <- c(rep(0.1,24))
+struct <- c(5, 4) #two inputs, two hidden, one output
+plotnet(wts_in, struct = struct,bias=FALSE,x_names="observed",
+        y_names="hidden",node_labs=F,circle_col=list("lightblue","white"))
+```
+
+
+```{r}
+library(keras)
+fm<-dataset_fashion_mnist()# fread("fashion-mnist_train.csv")
+```
+
+```{r,fig.align="center",fig.width=7,fig.height=4.5}
+fm_mat<-t(apply(fm$train$x,1,c))
+modelRBM <- RBM(x = fm_mat[1:1000,]/255, n.iter = 1000, n.hidden = 100, size.minibatch = 10)
+fm_test<- as.vector(unlist(fm_mat[2001,])/255)
+ReconstructRBM(test =fm_test, model = modelRBM)
+fm_test<- as.vector(unlist(fm_mat[3002,])/255)
+ReconstructRBM(test =fm_test, model = modelRBM)
+```
+
